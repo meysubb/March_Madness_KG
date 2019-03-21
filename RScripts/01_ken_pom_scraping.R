@@ -13,7 +13,7 @@ process_ken_pom_sheet <- function(dat){
     clean_names() %>%
     mutate(seed = str_extract(x2, "[0-9]+")) %>% # extract seed where applicable
     mutate(x2 = gsub(" [0-9]+", "", x2)) # remove seed from school name
-    names(dat) <- c("rank", "team", "conf", "wins_losses",
+  names(dat) <- c("rank", "team", "conf", "wins_losses",
                   "adj_EM", "adj_offensive_efficiency", "adj_offensive_efficiency_seed",
                   "adj_defensive_efficiency", "adj_defensive_efficiency_seed",
                   "adj_tempo", "adj_tempo_seed", "luck", "luck_seed", "sos_adj_em",
@@ -25,6 +25,7 @@ process_ken_pom_sheet <- function(dat){
     select(rank, everything()) %>%
     filter(!is.na(rank), !rank %in% c("Rank", "Rk")) %>%
     mutate(rank = as.numeric(rank)) %>%
+    mutate_all(as.character) %>% 
     mutate_at(vars(adj_EM:year), parse_number) %>%
     mutate(seed = as.numeric(seed))
   dat
@@ -56,4 +57,4 @@ kp_all_years_raw <- year_seq %>%
   
 kp_all_years_processed <- map_df(kp_all_years_raw, process_ken_pom_sheet)
   
-write_csv(kp_all_years_processed, "data/model_inputs/ken_pom.csv", na = "")
+write_csv(kp_all_years_processed, "data/Final/ken_pom.csv", na = "")
